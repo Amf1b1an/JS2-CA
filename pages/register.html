@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../assets/css/styles.css"/>
+</head>
+<body>
+    <div class="container">
+        <h1>Title Placeholder</h1>
+        <div class="card">
+            <h2>Register</h2>
+            <form id="registerForm" class="form">
+                <div class="form-row">
+                    <label>Name (letters, numbers, underscore)</label>
+                    <input class="input" type="text" name="name" required pattern="^[A-Za-z0-9_]+$"/>
+                </div>
+                <div class="form-row">
+                    <label>Email (stud.noroff.no / noroff.no)</label>
+                    <input class="input" type="email" name="email" required/>
+                </div>
+                <div class="form-row">
+                    <label>Password (min 8 chars)</label>
+                    <input class="input" type="password" name="password" required minlength="8"/>
+                </div>
+                <div class="form-row">
+                    <label>Avatar URL (optional)</label>
+                    <input class="input" type="url" name="avatar"/>
+                </div>
+                <div class="row">
+                    <button class="button primary" type="submit">Register</button>
+                    <a class="button" href="./login.html">Back to Login</a>
+                </div>
+                <p id="registerError" class="badge hidden"></p>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="../src/main/register.js"></script>
+</body>
+</html>
