@@ -94,6 +94,32 @@ export async function updatePost(id, updates) {
     return res?.data;
 }
 
+
+export async function reactToPost(id, symbol) {
+    const res = await apiFetch(
+        `/social/posts/${encodeURIComponent(id)}/react/${encodeURIComponent(symbol)}`,
+        { method: "PUT" }
+    );
+    return res?.data;
+}
+
+export async function addComment(postId, { body, replyToId } = {}) {
+    const payload = { body };
+    if (replyToId != null) payload.replyToId = replyToId;
+    const res = await apiFetch(
+        `/social/posts/${encodeURIComponent(postId)}/comment`,
+        { method: "POST", body: JSON.stringify(payload) }
+    );
+    return res?.data;
+}
+
+export async function deleteComment(postId, commentId) {
+    await apiFetch(
+        `/social/posts/${encodeURIComponent(postId)}/comment/${encodeURIComponent(commentId)}`,
+        { method: "DELETE" }
+    );
+}
+
 /**
  * Delete a post by id.
  * @param {string|number} id

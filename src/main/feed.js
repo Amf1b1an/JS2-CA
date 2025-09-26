@@ -42,7 +42,7 @@ async function load () {
         nextBtn.disabled = items.length === 0;
     } catch (e) {
         console.error(e);
-        feedE1.textContent = "",
+        feedEl.textContent = "";
         showError(e.message || "Failed to load feed");
 
         if (/unauthorized|invalid token/i.test(e.message || "")) {
@@ -89,7 +89,7 @@ function renderFeed(items) {
         row.className = "row";
         const tags = document.createElement("span");
         tags.className = "badge";
-        tags.textContent = (p.tags && p.tags.length) ? "#" + p.tags.join("#") : "#";
+        tags.textContent = (p.tags?.length ? `#${p.tags.join(" #")}` : "#");
         row.appendChild(tags);
 
         const authorBtn = document.createElement("a")
