@@ -1,5 +1,6 @@
 import { store } from "../state/store.js";
 import { getPosts, createPost, updatePost, deletePost } from "../api/posts.js";
+import { toUrl } from "../utils/media.js";
 
 if (!store.token()) {
     location.href = "./login.html";
@@ -69,9 +70,10 @@ function renderFeed(items) {
         titleA.appendChild(h3);
         card.appendChild(titleA);
 
-        if (p.media) {
+        const url = toUrl(p.media);
+        if (url) {
             const img = document.createElement("img")
-            img.src = p.media;
+            img.src = url;
             img.alt = "";
             img.style = "max-width:100%;border-radius:12px;margin:6px 0";
             card.appendChild(img);
@@ -114,7 +116,7 @@ function renderFeed(items) {
             delBtn.addEventListener("click", () => onDelete(p.id));
             actions.appendChild(delBtn);
 
-            card.appendChild(action);
+            card.appendChild(actions);
         }
 
         feedEl.appendChild(card);
