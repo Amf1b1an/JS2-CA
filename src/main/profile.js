@@ -158,25 +158,6 @@ function renderProfile(p) {
     const form = document.createElement("form");
     form.className = "form";
 
-    const r1 = document.createElement("div");
-    r1.className = "form-row";
-    const avatarInput = document.createElement("input");
-    avatarInput.className = "input";
-    avatarInput.name = "avatar";
-    avatarInput.type = "url";
-    avatarInput.placeholder = "New avatar URL";
-    avatarInput.value = avatarUrl || "";
-    r1.appendChild(avatarInput);
-
-    const r2 = document.createElement("div");
-    r2.className = "form-row";
-    const bannerInput = document.createElement("input");
-    bannerInput.className = "input";
-    bannerInput.name = "banner";
-    bannerInput.type = "url";
-    bannerInput.placeholder = "New banner URL";
-    bannerInput.value = bannerUrl || "";
-    r2.appendChild(bannerInput);
 
     const r3 = document.createElement("div");
     r3.className = "row";
