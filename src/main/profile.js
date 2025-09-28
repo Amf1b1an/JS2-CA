@@ -167,7 +167,7 @@ function renderProfile(p) {
     btn.textContent = "Update Media";
     r3.appendChild(btn);
 
-    form.append(r1, r2, r3);
+    form.append(r3);
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
