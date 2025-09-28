@@ -100,6 +100,11 @@ function makeVoteBar(p) {
   return wrap;
 }
 
+/**
+ * Structure for the feed
+ * 20 renderFeed(items) per page
+ */
+
 async function load () {
     hideError();
     feedEl.textContent = "Loading...";
@@ -120,6 +125,28 @@ async function load () {
         }
     }
 }
+
+/**
+ * Structure of the renderFeed(items)
+ *  item spot  
+ *    - author
+ *    - vertical vote bar
+ *    - post
+ *  item 
+ *    - title
+ *    - media
+ *    - body
+ *    - tags 
+ *    - author
+ * 
+ *    my own item, add
+ *    - edit button
+ *    - delete button
+ *    after author
+ * 
+ * @param {*PostSummary[]} items 
+ * @returns {void}
+ */
 
 function renderFeed(items) {
   feedEl.innerHTML = "";
