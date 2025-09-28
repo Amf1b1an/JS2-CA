@@ -9,6 +9,11 @@ if (!store.token()) location.href = "./login.html";
 const box = document.getElementById("profileBox");
 const postsEl = document.getElementById("userPosts");
 const errEl = document.getElementById("profileError");
+
+document.getElementById("backBtn")?.addEventListener("click", () => {
+  location.href = "./feed.html";
+});
+
 document.getElementById("logoutBtn")?.addEventListener("click", () => {
   store.clear();
   location.href = "./login.html";
@@ -212,7 +217,7 @@ function renderPosts(items) {
     a.appendChild(h3);
     card.appendChild(a);
 
-    // Normalize media to a string URL (handles string, {url}, or array)
+   
     let mediaUrl = "";
     if (Array.isArray(post.media) && post.media.length) {
       mediaUrl = toUrl(post.media[0]);

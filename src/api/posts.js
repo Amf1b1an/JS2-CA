@@ -19,6 +19,7 @@ export async function getPosts({ page = 1, limit = 20, q = "" } = {}) {
         page: String(page), 
         limit: String(limit), 
         _author: "true", 
+        _reactions: "true",
     });
 
       // If q looks like a tag (e.g. "#news"), try server-side tag filter

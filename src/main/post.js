@@ -11,11 +11,148 @@ function showErr(msg) { if (errEl){ errEl.textContent = msg; errEl.classList.rem
 function hideErr() { if (errEl) errEl.classList.add("hidden"); }
 function fmtDate(iso) { try { return new Date(iso).toLocaleString(); } catch { return iso || ""; } }
 
+const UP = "👍";
+const DOWN = "👎";
+const VKEY = "votes-local";
+const readVotes = () => { try { return JSON.parse(localStorage.getItem(VKEY) || "{}"); } catch { return {}; } };
+const writeVotes = (v) => localStorage.setItem(VKEY, JSON.stringify(v));
+const getVote = (postId) => readVotes()[postId] || null;
+const setVote = (postId, val) => { const v = readVotes(); if (val) v[postId] = val; else delete v[postId]; writeVotes(v); };
+const countSymbol = (arr, sym) => {
+  if (!Array.isArray(arr)) return 0;
+  const hit = arr.find(r => (typeof r === "string" ? r : r.symbol) === sym);
+  return hit ? (hit.count ?? (typeof hit === "string" ? 1 : 0)) : 0;
+};
+
+function aggregateReactions(raw) {
+  const list = Array.isArray(raw) ? raw : [];
+  const map = new Map ();
+  for (const r of list){
+    const symbol = typeof r === "string" ? r : (r?.symbol || "");
+    if (!symbol) continue;
+    const count = typeof r === "object" && typeof r.count === "number" ? r.count : 1;
+    map.set(symbol, (map.get(symbol) || 0) + count);
+  }
+  return [...map.entries()]
+    .map(([symbol, count]) => ({symbol, count}))
+    .sort((a, b) => b.count - a.count);
+}
+
+
+function renderVoteInline(p) {
+  const wrap = document.createElement("div");
+  wrap.className = "vote-inline";
+
+  // --- vote buttons + amount 
+  const upBtn = document.createElement("button");
+  upBtn.className = "vote-btn";
+  upBtn.type = "button";
+  upBtn.textContent = UP;
+  upBtn.ariaLabel = "Upvote";
+
+  const score = document.createElement("span");
+  score.className = "score";
+
+  const downBtn = document.createElement("button");
+  downBtn.className = "vote-btn";
+  downBtn.type = "button";
+  downBtn.textContent = DOWN;
+  downBtn.ariaLabel = "Downvote";
+
+  const refreshScoreUI = () => {
+    const ups = countSymbol(p.reactions, UP);
+    const downs = countSymbol(p.reactions, DOWN);
+    score.textContent = String(ups - downs);
+    const mine = getVote(p.id);
+    upBtn.classList.toggle("active", mine === "up");
+    downBtn.classList.toggle("active", mine === "down");
+  };
+
+  const vote = async (dir) => {
+    const mine = getVote(p.id);
+    upBtn.disabled = downBtn.disabled = true;
+    try {
+      if (mine === dir) {
+        await reactToPost(p.id, dir === "up" ? UP : DOWN);
+        setVote(p.id, null);
+      } else {
+        if (mine) { try { await reactToPost(p.id, mine === "up" ? UP : DOWN); } catch {} }
+        await reactToPost(p.id, dir === "up" ? UP : DOWN);
+        setVote(p.id, dir);
+      }
+      await load();
+    } catch (e) {
+      console.error(e);
+      showErr(e.message || "Failed to vote");
+    } finally {
+      upBtn.disabled = downBtn.disabled = false;
+    }
+  };
+
+  upBtn.addEventListener("click", () => vote("up"));
+  downBtn.addEventListener("click", () => vote("down"));
+
+  // --- reactions area (collapsible) ---
+  let expanded = false;
+  const tray = document.createElement("div");
+  tray.className = "rx-tray";
+
+  function renderTray() {
+    tray.innerHTML = "";
+    const agg = aggregateReactions(p.reactions);
+    const visible = expanded ? agg : agg.slice(0, 4);
+
+    for (const r of visible) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = `${r.symbol} ${r.count}`;
+      chip.title = `React with ${r.symbol}`;
+      chip.addEventListener("click", async (e) => {
+        e.stopPropagation(); // don't toggle expand
+        try { await reactToPost(p.id, r.symbol); await load(); }
+        catch (err) { console.error(err); showErr(err.message || "Failed to react"); }
+      });
+      tray.appendChild(chip);
+    }
+
+    if (!expanded && agg.length > 4) {
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "chip rx-ellipsis";
+      more.textContent = "…";
+      more.title = `Show all ${agg.length} reactions`;
+      tray.appendChild(more);
+    }
+  }
+  tray.addEventListener("click", () => { expanded = !expanded; renderTray(); });
+
+ 
+  const addBtn = document.createElement("button");
+  addBtn.className = "icon-btn";
+  addBtn.type = "button";
+  addBtn.title = "Add reaction";
+  addBtn.textContent = "➕";
+  addBtn.addEventListener("click", async (e) => {
+    e.stopPropagation(); 
+    const sym = (prompt("React with emoji (e.g. 😍):") || "").trim();
+    if (!sym) return;
+    try { await reactToPost(p.id, sym); await load(); }
+    catch (err) { console.error(err); showErr(err.message || "Failed to react"); }
+  });
+
+  // assemble: votes → score → votes → plus → tray
+  wrap.append(upBtn, score, downBtn, addBtn, tray);
+  refreshScoreUI();
+  renderTray();
+  return wrap;
+}
+
+
+// Post creation and order
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
-
-if (!id) { postEl.innerHTML = ""; showErr("Missing post id."); }
-else { load(); }
+if (!id) { postEl.innerHTML = ""; showErr("Missing post id."); } else { load(); }
 
 async function load() {
   hideErr();
@@ -24,13 +161,15 @@ async function load() {
     const p = await getPost(id);
     if (!p) { postEl.innerHTML = ""; showErr("Post not found."); return; }
 
-    // Render main post
     postEl.innerHTML = "";
+
+
+    const content = document.createElement("div");
+
     const h2 = document.createElement("h2");
     h2.textContent = p.title || "(untitled)";
-    postEl.appendChild(h2);
+    content.appendChild(h2);
 
-    // media (string, {url}, or array)
     let mediaUrl = "";
     if (Array.isArray(p.media) && p.media.length) mediaUrl = toUrl(p.media[0]);
     else mediaUrl = toUrl(p.media);
@@ -39,34 +178,34 @@ async function load() {
       img.src = mediaUrl;
       img.alt = "";
       img.style = "max-width:100%;border-radius:12px;margin:6px 0";
-      postEl.appendChild(img);
+      content.appendChild(img);
     }
+
+    content.appendChild(renderVoteInline(p));
 
     if (p.body) {
       const bodyP = document.createElement("p");
       bodyP.textContent = p.body;
-      postEl.appendChild(bodyP);
+      content.appendChild(bodyP);
     }
 
     const meta = document.createElement("p");
     meta.className = "badge";
     const author = p.author?.name || "unknown";
     meta.textContent = `By ${author} • ${fmtDate(p.created)}${p.updated ? ` • updated ${fmtDate(p.updated)}` : ""}`;
-    postEl.appendChild(meta);
+    content.appendChild(meta);
 
-    // tags
     const tags = Array.isArray(p.tags) ? p.tags : [];
     if (tags.length) {
       const tg = document.createElement("p");
       tg.className = "badge";
       tg.textContent = `#${tags.join(" #")}`;
-      postEl.appendChild(tg);
+      content.appendChild(tg);
     }
 
-    // reactions UI
-    postEl.appendChild(renderReactions(p));
+    
+    postEl.appendChild(content);
 
-    // comments UI
     postEl.appendChild(renderComments(p));
 
   } catch (e) {
@@ -80,53 +219,8 @@ async function load() {
   }
 }
 
-function renderReactions(p) {
-  const wrap = document.createElement("div");
-  wrap.className = "row";
-  // existing reaction buttons (if API returns aggregated list)
-  const existing = Array.isArray(p.reactions) ? p.reactions : [];
-  for (const r of existing) {
-    const symbol = typeof r === "string" ? r : r.symbol || "";
-    const count  = typeof r === "object" && typeof r.count === "number" ? r.count : null;
-    if (!symbol) continue;
-    const btn = document.createElement("button");
-    btn.className = "button";
-    btn.textContent = count != null ? `${symbol} ${count}` : symbol;
-    btn.title = "React";
-    btn.addEventListener("click", () => onReact(symbol));
-    wrap.appendChild(btn);
-  }
 
-  // free-form react (type any emoji)
-  const input = document.createElement("input");
-  input.className = "input";
-  input.placeholder = "Type an emoji, e.g. 😍";
-  input.maxLength = 8;
-
-  const reactBtn = document.createElement("button");
-  reactBtn.className = "button primary";
-  reactBtn.textContent = "React";
-  reactBtn.addEventListener("click", () => {
-    const sym = input.value.trim();
-    if (!sym) return;
-    onReact(sym);
-  });
-
-  wrap.appendChild(input);
-  wrap.appendChild(reactBtn);
-  return wrap;
-}
-
-async function onReact(symbol) {
-  try {
-    await reactToPost(id, symbol);
-    await load(); // refresh counts
-  } catch (e) {
-    console.error(e);
-    showErr(e.message || "Failed to react");
-  }
-}
-
+// kommentarfelt - comments
 function renderComments(p) {
   const section = document.createElement("div");
   section.className = "card";
@@ -140,9 +234,7 @@ function renderComments(p) {
   const comments = Array.isArray(p.comments) ? [...p.comments] : [];
   comments.sort((a,b) => new Date(a.created) - new Date(b.created));
 
-  // comment composer state
   let replyToId = null;
-
   const me = store.profile()?.name;
 
   for (const c of comments) {
@@ -189,7 +281,6 @@ function renderComments(p) {
     list.appendChild(item);
   }
 
-  // add comment form
   const form = document.createElement("form");
   form.className = "form";
 
@@ -221,7 +312,7 @@ function renderComments(p) {
     try {
       await addComment(id, { body, replyToId });
       input.value = "";
-      cancelReplyBtn.click(); // reset reply
+      cancelReplyBtn.click();
       await load();
     } catch (e2) {
       console.error(e2);

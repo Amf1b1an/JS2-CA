@@ -1,39 +1,31 @@
 import { API_BASE } from "./config.js";
 import { store } from "../state/store.js";
 
+export async function apiFetch(path, options = {}) {
+  const hdrs = {};
+  const token = store.token?.();
+  const apiKey = store.apiKey?.();
 
+  if (token) hdrs.Authorization = `Bearer ${token}`;
+  if (apiKey) hdrs["X-Noroff-API-Key"] = apiKey;
 
-export async function apiFetch(path, options ={}) {
-    const headers = { "Content-Type": "application/json" };
+  
+  const hasBody = options.body != null && !(options.body instanceof FormData);
+  if (hasBody) hdrs["Content-Type"] = "application/json";
 
-    const token = store.token();
-    const apiKey = store.apiKey();
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: { ...hdrs, ...(options.headers || {}) },
+  });
 
-    if (token) headers.Authorization = `Bearer ${token}`;
-    if (apiKey) headers["X-Noroff-API-Key"] = apiKey;
-
-    const res = await fetch(`${API_BASE}${path}`, {
-        ...options,
-        headers: { ...headers, ...(options.headers || {}) },
-    });
-
-    if (!res.ok) {
-    let errorMessage = `${res.status} ${res.statusText}`;
+  if (!res.ok) {
+    let message = "API request failed";
     try {
-      const errorData = await res.json();
-      errorMessage = errorData?.errors?.[0]?.message || errorData?.message || errorMessage;
-    } catch {
-
-    }
-    throw new Error(errorMessage);
+      const txt = await res.text();
+      const j = JSON.parse(txt);
+      message = j?.message || j?.errors?.[0]?.message || txt || message;
+    } catch {}
+    throw new Error(message);
   }
-
-  if (res.status === 204) return null;
-
-
-
-
-
-    return res.json();
-    
+  try { return await res.json(); } catch { return {}; }
 }

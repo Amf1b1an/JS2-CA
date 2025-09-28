@@ -8,46 +8,56 @@
 </head>
 <body>
     <div class="container">
-        <nav>
-            <a class="button" href="./profile.html">My Profile</a>
-            <button id="logoutBtn" class="button">Logout</button>
-        </nav>
-
+        <header class="topbar">
+            <nav class="right">
+                <button id="profileBtn" type="button" class="button">MY PROFILE</button>
+                <button id="logoutBtn" type="button" class="button">LOGOUT</button>
+            </nav>
+        </header>
         <h1>Feed</h1>
+        
+        <div class="main-wrap">
 
-        <div class="card">
-            <form id="createPostForm">
-                <div class="form-row">
-                    <input class="input" name="title" placeholder="Post title" required/>
-                </div>
-                <div class="form-row">
-                    <textarea class="input" name="body" rows="3" placeholder="What's on your mind?"></textarea>
-                </div>
-                <div class="form-row">
-                    <input class="input" type="url" name="media" placeholder="Image URL (optional)"/>
-                </div>
-                <div class="row">
-                    <input class="input" name="tags" placeholder="tags (comma separated)" style="flex:1"/>
-                    <button class="button primary" type="submit">Create Post</button>
-                </div>
-            </form>
+            <div class="card">
+                <form id="createPostForm">
+                    <div class="form-row">
+                        <input class="input" name="title" placeholder="Post title" required/>
+                    </div>
+                    <div class="form-row">
+                        <textarea class="input" name="body" rows="3" placeholder="What's on your mind?"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <input class="input" type="url" name="media" placeholder="Image URL (optional)"/>
+                    </div>
+                    <div class="row">
+                        <input class="input" name="tags" placeholder="tags (comma separated)" style="flex:1"/>
+                        <button class="button primary" type="submit">Create Post</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+                <input id="searchInput" class="input" placeholder="Search posts (title/body)"/>
+                <button id="searchBtn" class="button">Search</button>
+                <button id="clearSearchBtn" class="button">Clear</button>
+            </div>
+
+            <div id="feed" class="card"></div>
+
+            <div class="row">
+                <button id="prevPage" class="button">Prev</button>
+                <span id="pageInfo" class="badge">Page 1</span>
+                <button id="nextPage" class="button">Next</button>
+            </div>
+            <p id="feedError" class="badge hidden"></p>
         </div>
-
-        <div class="row">
-            <input id="searchInput" class="input" placeholder="Search posts (title/body)"/>
-            <button id="searchBtn" class="button">Search</button>
-            <button id="clearSearchBtn" class="button">Clear</button>
-        </div>
-
-        <div id="feed" class="card"></div>
-
-        <div class="row">
-            <button id="prevPage" class="button">Prev</button>
-            <span id="pageInfo" class="badge">Page 1</span>
-            <button id="nextPage" class="button">Next</button>
-        </div>
-        <p id="feedError" class="badge hidden"></p>
     </div>
-    <script type="module" src="../src/main/feed.js"></script>
+    <script type="module" src="../src/main/feed.js">
+        import { store } from "../src/state/store.js";
+        const me = store.profile?.()?.name;
+        document.getElementById("profileLink").href = me
+        ? `./profile.html?name=${encodeURIComponent(me)}`
+        : "./login.html";
+    </script>
 </body>
 </html>
