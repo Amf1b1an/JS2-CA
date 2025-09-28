@@ -30,19 +30,18 @@
       if (!token) return false;
       try {
         const payload = JSON.parse(b64urlDecode(token.split(".")[1]) || "{}");
-        if (!payload.exp) return true;        // if no exp, assume valid
+        if (!payload.exp) return true;    
         return Date.now() < payload.exp * 1000;
       } catch { return false; }
     }
 
-    // 🔎 Read YOUR keys (from store.js)
     const token  = localStorage.getItem("token");
     const apiKey = localStorage.getItem("apiKey");
 
     const authed = !!(token && apiKey && isTokenValid(token));
 
     if (!authed) {
-      // optional: clear stale keys
+
       try { localStorage.removeItem("token"); localStorage.removeItem("apiKey"); } catch {}
     }
 
@@ -52,7 +51,6 @@
 
 
   <noscript>
-    <p>Please enable JavaScript or use the link above.</p>
   </noscript>
 </body>
 </html>
