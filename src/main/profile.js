@@ -158,17 +158,6 @@ function renderProfile(p) {
     const form = document.createElement("form");
     form.className = "form";
 
-
-    const r3 = document.createElement("div");
-    r3.className = "row";
-    const btn = document.createElement("button");
-    btn.className = "button primary";
-    btn.type = "submit";
-    btn.textContent = "Update Media";
-    r3.appendChild(btn);
-
-    form.append(r3);
-
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const avatar = avatarInput.value.trim();
