@@ -38,6 +38,13 @@ function aggregateReactions(raw) {
     .sort((a, b) => b.count - a.count);
 }
 
+/**
+ * -Up/downBtn toggles the users vote, where score is the total value.
+ * -The Reaction tray is my attempt on creating a clean and nice area for the reactions. It will show the top four reactions, and if the post recieves more then 4 different reactions,
+ * it will show a collapsible button that will display all the reactions. one click on each chip will add one more of the same reaction, the plus sign lets you add a new reaction. 
+ * @param {Post} p - post to render voting UI
+ * @returns {HTMLDivElement} 
+ */
 
 function renderVoteInline(p) {
   const wrap = document.createElement("div");
@@ -92,7 +99,7 @@ function renderVoteInline(p) {
   upBtn.addEventListener("click", () => vote("up"));
   downBtn.addEventListener("click", () => vote("down"));
 
-  // --- reactions area (collapsible) ---
+  // --- reactions area ---
   let expanded = false;
   const tray = document.createElement("div");
   tray.className = "rx-tray";
@@ -109,7 +116,7 @@ function renderVoteInline(p) {
       chip.textContent = `${r.symbol} ${r.count}`;
       chip.title = `React with ${r.symbol}`;
       chip.addEventListener("click", async (e) => {
-        e.stopPropagation(); // don't toggle expand
+        e.stopPropagation(); 
         try { await reactToPost(p.id, r.symbol); await load(); }
         catch (err) { console.error(err); showErr(err.message || "Failed to react"); }
       });
@@ -127,7 +134,6 @@ function renderVoteInline(p) {
   }
   tray.addEventListener("click", () => { expanded = !expanded; renderTray(); });
 
- 
   const addBtn = document.createElement("button");
   addBtn.className = "icon-btn";
   addBtn.type = "button";
@@ -141,19 +147,33 @@ function renderVoteInline(p) {
     catch (err) { console.error(err); showErr(err.message || "Failed to react"); }
   });
 
-  // assemble: votes → score → votes → plus → tray
   wrap.append(upBtn, score, downBtn, addBtn, tray);
   refreshScoreUI();
   renderTray();
   return wrap;
 }
 
-
-// Post creation and order
+/**Post creation and order */
+ 
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
 if (!id) { postEl.innerHTML = ""; showErr("Missing post id."); } else { load(); }
 
+/** 
+ * structure 
+ *  - content
+ *    - title
+ *    - media
+ *    - inline voting
+ *    - body text
+ *    - badge / author and dates
+ *    - tags
+ *  error handling
+ * 
+ * @param {load}
+ * @returns {Promise<void>}
+ * 
+ * */
 async function load() {
   hideErr();
   postEl.textContent = "Loading...";

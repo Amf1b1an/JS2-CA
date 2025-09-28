@@ -2,10 +2,13 @@ import { store } from "../state/store.js";
 import { getProfile, getProfilePosts, toggleFollow, updateProfileMedia } from "../api/profiles.js";
 import { toUrl } from "../utils/media.js";
 
-/** Auth guard */
+/** Auth guard 
+ * 
+ * checks if the auth token exists. 
+ * If not, the user will be returned to login.html
+*/
 if (!store.token()) location.href = "./login.html";
 
-// Elements
 const box = document.getElementById("profileBox");
 const postsEl = document.getElementById("userPosts");
 const errEl = document.getElementById("profileError");
@@ -19,12 +22,10 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
   location.href = "./login.html";
 });
 
-// State
 const meName = store.profile()?.name || "";
 const qs = new URLSearchParams(location.search);
 const viewing = qs.get("name") || meName;
 
-// Helpers
 function showErr(msg) {
   if (errEl) {
     errEl.textContent = msg;
@@ -70,10 +71,24 @@ async function load() {
   }
 }
 
+/**Profile Rendering
+ * the structure of the profile view
+ *  - banner image
+ *  - profile picture and name
+ *  - three counters for followers following, and post counts
+ *  - (OWN PROFILE) update profile form
+ *  - (OTHER PROFILES) Follow and unfollow buttons
+ * 
+ * 
+ * 
+ * 
+ * @param {profile} p - profile data
+ * @returns {void}
+ */
+
 function renderProfile(p) {
   box.innerHTML = "";
 
-  // Banner (normalize to URL)
   const bannerUrl = toUrl(p.banner);
   if (bannerUrl) {
     const b = document.createElement("div");
@@ -86,7 +101,6 @@ function renderProfile(p) {
     box.appendChild(b);
   }
 
-  // Row: avatar + info
   const row = document.createElement("div");
   row.className = "row";
 
@@ -118,7 +132,6 @@ function renderProfile(p) {
   row.appendChild(info);
   box.appendChild(row);
 
-  // Follow/Unfollow (only when viewing someone else)
   if (viewing && meName && viewing !== meName) {
     const youFollow = !!(p.followers || []).find(f => f.name === meName);
     const btn = document.createElement("button");
@@ -138,12 +151,10 @@ function renderProfile(p) {
     box.appendChild(btn);
   }
 
-  // Update media (your own profile)
   if (viewing === meName) {
     const hr = document.createElement("hr");
     box.appendChild(hr);
 
-    // Build form with DOM (so we set .value safely as strings)
     const form = document.createElement("form");
     form.className = "form";
 
