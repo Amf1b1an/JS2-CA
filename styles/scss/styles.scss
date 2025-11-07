@@ -1,1 +1,12 @@
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@use "variables" as *;
+@use "../../node_modules/bootstrap/scss/bootstrap.scss" as * with (
+  $primary: $primary,
+  $secondary: $secondary,
+  $success: $success,
+  $info: $info,
+  $danger: $danger,
+  $border-radius: $border-radius,
+  $font-family-base: $font-family-base
+);
+
+@use "custom";
