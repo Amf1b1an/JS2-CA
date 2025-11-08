@@ -8,78 +8,120 @@
   </head>
 
   <body class="bg-primary p-5">
-    <div class="container">
-      <header class="topbar">
-        <container class="right mb-3">
-          <button id="profileBtn" type="button" class="btn bg-info">
-            MY PROFILE
-          </button>
-          <button id="logoutBtn" type="button" class="btn bg-info">
-            LOGOUT
-          </button>
-        </container>
-      </header>
+    <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-8 col-12">
+        <header class="">
+          <div
+            class="container d-flex justify-content-between align-items-center text-center"
+          >
+            <button
+              id="profileBtn"
+              type="button"
+              class="btn bg-primary text-light btn-outline-info px-5 btn-primary flex-fill mx-2"
+            >
+              MY PROFILE
+            </button>
+            <button
+              id="logoutBtn"
+              type="button"
+              class="btn bg-primary text-light btn-outline-info px-5 btn-primary flex-fill mx-2"
+            >
+              LOGOUT
+            </button>
+          </div>
+        </header>
 
-      <h1>Feed</h1>
+        <h1 class="text-light">Feed</h1>
 
-      <div class="main-wrap">
-        <div class="card">
-          <form id="createPostForm">
-            <div class="form-row">
-              <input
-                class="input"
-                name="title"
-                placeholder="Post title"
-                required
-              />
-            </div>
-            <div class="form-row">
-              <textarea
-                class="input"
-                name="body"
-                rows="3"
-                placeholder="What's on your mind?"
-              ></textarea>
-            </div>
-            <div class="form-row">
-              <input
-                class="input"
-                type="url"
-                name="media"
-                placeholder="Image URL (optional)"
-              />
-            </div>
-            <div class="row">
-              <input
-                class="input"
-                name="tags"
-                placeholder="tags (comma separated)"
-                style="flex: 1"
-              />
-              <button class="button primary" type="submit">Create Post</button>
-            </div>
-          </form>
+        <div class="container rounded">
+          <div class="container bg-secondary p-4 rounded mb-3">
+            <form id="createPostForm">
+              <div class="form-row">
+                <input
+                  class="form-control bg-dark rounded border border-info mb-3"
+                  name="title"
+                  placeholder="Post title"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <textarea
+                  class="form-control bg-dark rounded border border-info mb-3"
+                  name="body"
+                  rows="3"
+                  placeholder="What's on your mind?"
+                ></textarea>
+              </div>
+              <div class="form-row">
+                <input
+                  class="form-control bg-dark rounded border border-info mb-3"
+                  type="url"
+                  name="media"
+                  placeholder="Image URL (optional)"
+                />
+              </div>
+              <div class="form-row">
+                <input
+                  class="form-control bg-dark rounded border border-info mb-3"
+                  name="tags"
+                  placeholder="tags (comma separated)"
+                  style="flex: 1"
+                />
+                <button
+                  class="btn btn-primary btn-outline-info text-light"
+                  type="submit"
+                >
+                  Create Post
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="container bg-secondary p-4 rounded mb-3">
+            <input
+              id="searchInput"
+              class="form-control bg-dark rounded border border-info mb-3"
+              placeholder="Search posts (title/body)"
+            />
+            <button
+              id="searchBtn"
+              class="btn btn-primary btn-outline-info text-light"
+            >
+              Search
+            </button>
+            <button
+              id="clearSearchBtn"
+              class="btn btn-primary btn-outline-info text-light"
+            >
+              Clear
+            </button>
+          </div>
+
+          <div id="feed" class="container bg-secondary p-4 rounded mb-3"></div>
+
+          <div
+            class="container d-flex justify-content-between align-items-center text-center"
+          >
+            <button
+              id="prevPage"
+              class="btn btn-primary btn-outline-info text-light"
+            >
+              Prev
+            </button>
+            <span id="pageInfo" class="badge">Page 1</span>
+            <button
+              id="nextPage"
+              class="btn btn-primary btn-outline-info text-light"
+            >
+              Next
+            </button>
+          </div>
+          <p id="feedError" class="badge hidden"></p>
         </div>
-
-        <div class="row">
-          <input
-            id="searchInput"
-            class="input"
-            placeholder="Search posts (title/body)"
-          />
-          <button id="searchBtn" class="button">Search</button>
-          <button id="clearSearchBtn" class="button">Clear</button>
-        </div>
-
-        <div id="feed" class="card"></div>
-
-        <div class="row">
-          <button id="prevPage" class="button">Prev</button>
-          <span id="pageInfo" class="badge">Page 1</span>
-          <button id="nextPage" class="button">Next</button>
-        </div>
-        <p id="feedError" class="badge hidden"></p>
       </div>
+
+      <div class="col-lg-2"></div>
     </div>
     <script type="module" src="../src/main/feed.js">
       import { store } from "../src/state/store.js";

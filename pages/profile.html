@@ -6,21 +6,42 @@
     <title>Sphere - Profile</title>
     <link rel="stylesheet" href="../styles/css/styles.css" />
   </head>
-  <body>
-    <div class="container">
-      <nav>
-        <button id="backBtn" type="button" class="btn bg-primary">FEED</button>
-        <button id="logoutBtn" type="button" class="button">LOGOUT</button>
-      </nav>
+  <body class="bg-primary p-5">
+    <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-8 col-12">
+        <header
+          class="container d-flex justify-content-between align-items-center text-center"
+        >
+          <button
+            id="backBtn"
+            type="button"
+            class="btn bg-primary text-light btn-outline-info px-5 btn-primary flex-fill mx-2"
+          >
+            FEED
+          </button>
+          <button
+            id="logoutBtn"
+            type="button"
+            class="btn bg-primary text-light btn-outline-info px-5 btn-primary flex-fill mx-2"
+          >
+            LOGOUT
+          </button>
+        </header>
 
-      <h1>Profile</h1>
+        <h1 class="text-light">Profile</h1>
 
-      <div id="profileBox" class="card"></div>
+        <div
+          id="profileBox"
+          class="container bg-secondary rounded p-4 mb-4 shadow-sm"
+        ></div>
 
-      <h2 style="margin-top: 16px">Posts</h2>
-      <div id="userPosts" class="card"></div>
+        <h2 style="margin-top: 16px">Posts</h2>
+        <div id="userPosts" class="container p-4 mb-4 shadow-sm"></div>
 
-      <p id="profileError" class="badge hidden"></p>
+        <p id="profileError" class="badge bg-info text-light d-none"></p>
+      </div>
+      <div class="col-lg-2"></div>
     </div>
     <script type="module" src="../src/main/profile.js"></script>
   </body>

@@ -1,12 +1,19 @@
 @use "variables" as *;
-@use "../../node_modules/bootstrap/scss/bootstrap.scss" as * with (
+@use "../../node_modules/bootstrap/scss/bootstrap" with (
   $primary: $primary,
   $secondary: $secondary,
   $success: $success,
   $info: $info,
   $danger: $danger,
+  $light: $light,
+  $dark: $dark,
   $border-radius: $border-radius,
   $font-family-base: $font-family-base
 );
 
 @use "custom";
+
+body {
+  background-color: $primary;
+  color: $light;
+}
