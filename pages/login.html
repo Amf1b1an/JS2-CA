@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Sphere - Login to your account</title>
-    <link rel="stylesheet" href="../assets/css/styles.css"/>
-
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sphere - Login to your account</title>
+    <link rel="stylesheet" href="../styles/css/styles.css" />
+  </head>
+  <body class="bg-primary">
     <div class="container">
-        <h1>Sphere</h1>
-        <div class="card">
-            <h2>Login</h2>
-            <form id="loginForm" class="form">
-                <div class="form-row">
-                    <label>Email:</label>
-                    <input class="input" type="email" name="email" required placeholder="user@stud.noroff.no"/>
-                </div>
-                <div class="form-row">
-                    <label>Password</label>
-                    <input class="input" type="password" name="password" required minlength="8"/>
-                </div>
-                <div class="row">
-                    <button class="button primary" type="submit">Login</button>
-                    <a class="button" href="./register.html">Register</a>
-                </div>
-                <p id="loginError" class="badge hidden"></p>
-            </form>
-        </div>
+      <h1 class="py-2.5 pt-5 text-light">Sphere</h1>
+      <div class="container bg-secondary rounded p-4 border border-light">
+        <h2 class="text-light">Login</h2>
+        <form id="loginForm" class="custom-form">
+          <div class="mb-3">
+            <label for="email" class="form-label text-info">Email:</label>
+            <input
+              class="form-control bg-primary"
+              type="email"
+              id="email"
+              required
+              placeholder="user@stud.noroff.no"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label text-info">Password:</label>
+            <input
+              class="form-control bg-primary"
+              type="password"
+              id="password"
+              required
+              minlength="8"
+              required
+              placeholder="password"
+            />
+          </div>
+          <button class="btn btn-primary bg-success" type="submit">
+            Login
+          </button>
+          <a class="btn btn-primary bg-info" href="./register.html">Register</a>
+
+          <p id="loginError" class="badge hidden"></p>
+        </form>
+      </div>
     </div>
     <script type="module" src="../src/main/login.js"></script>
-</body>
+  </body>
 </html>
