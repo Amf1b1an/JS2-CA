@@ -1,12 +1,17 @@
 import { store } from "../state/store.js";
-import { getProfile, getProfilePosts, toggleFollow, updateProfileMedia } from "../api/profiles.js";
+import {
+  getProfile,
+  getProfilePosts,
+  toggleFollow,
+  updateProfileMedia,
+} from "../api/profiles.js";
 import { toUrl } from "../utils/media.js";
 
-/** Auth guard 
- * 
- * checks if the auth token exists. 
+/** Auth guard
+ *
+ * checks if the auth token exists.
  * If not, the user will be returned to login.html
-*/
+ */
 if (!store.token()) location.href = "./login.html";
 
 const box = document.getElementById("profileBox");
@@ -35,9 +40,19 @@ function showErr(msg) {
     alert(msg);
   }
 }
-function hideErr() { if (errEl) errEl.classList.add("hidden"); }
-function fmt(n) { return typeof n === "number" ? n : 0; }
-function fmtDate(iso) { try { return new Date(iso).toLocaleString(); } catch { return iso || ""; } }
+function hideErr() {
+  if (errEl) errEl.classList.add("hidden");
+}
+function fmt(n) {
+  return typeof n === "number" ? n : 0;
+}
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleString();
+  } catch {
+    return iso || "";
+  }
+}
 
 if (!viewing) {
   box.innerHTML = "";
@@ -78,10 +93,10 @@ async function load() {
  *  - three counters for followers following, and post counts
  *  - (OWN PROFILE) update profile form
  *  - (OTHER PROFILES) Follow and unfollow buttons
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  * @param {profile} p - profile data
  * @returns {void}
  */
@@ -92,7 +107,8 @@ function renderProfile(p) {
   const bannerUrl = toUrl(p.banner);
   if (bannerUrl) {
     const b = document.createElement("div");
-    b.style = "border-radius:12px;overflow:hidden;margin-bottom:8px;border:1px solid #1f2937";
+    b.style =
+      "border-radius:12px;overflow:hidden;margin-bottom:8px;border:1px solid #1f2937";
     const img = document.createElement("img");
     img.src = bannerUrl;
     img.alt = "";
@@ -108,7 +124,8 @@ function renderProfile(p) {
   const avatarUrl = toUrl(p.avatar);
   if (avatarUrl) avatarImg.src = avatarUrl;
   avatarImg.alt = "";
-  avatarImg.style = "height:72px;width:72px;border-radius:50%;object-fit:cover;border:1px solid #374151";
+  avatarImg.style =
+    "height:72px;width:72px;border-radius:50%;object-fit:cover;border:1px solid #374151";
   row.appendChild(avatarImg);
 
   const info = document.createElement("div");
@@ -118,10 +135,13 @@ function renderProfile(p) {
 
   const counts = document.createElement("p");
   counts.className = "badge";
-  const fwers = p._count?.followers ?? (p.followers?.length ?? 0);
-  const fwing = p._count?.following ?? (p.following?.length ?? 0);
-  const postCount = p._count?.posts ?? (Array.isArray(p.posts) ? p.posts.length : 0);
-  counts.textContent = `${fmt(fwers)} followers • ${fmt(fwing)} following • ${fmt(postCount)} posts`;
+  const fwers = p._count?.followers ?? p.followers?.length ?? 0;
+  const fwing = p._count?.following ?? p.following?.length ?? 0;
+  const postCount =
+    p._count?.posts ?? (Array.isArray(p.posts) ? p.posts.length : 0);
+  counts.textContent = `${fmt(fwers)} followers • ${fmt(
+    fwing
+  )} following • ${fmt(postCount)} posts`;
   info.appendChild(counts);
 
   const meta = document.createElement("p");
@@ -133,7 +153,7 @@ function renderProfile(p) {
   box.appendChild(row);
 
   if (viewing && meName && viewing !== meName) {
-    const youFollow = !!(p.followers || []).find(f => f.name === meName);
+    const youFollow = !!(p.followers || []).find((f) => f.name === meName);
     const btn = document.createElement("button");
     btn.className = "button primary";
     btn.textContent = youFollow ? "Unfollow" : "Follow";
@@ -189,7 +209,7 @@ function renderPosts(items) {
 
   for (const post of items) {
     const card = document.createElement("div");
-    card.className = "post";
+    card.className = "card h-100 shadow-sm bg-secondary border border-info p-3";
 
     const a = document.createElement("a");
     a.href = `./post.html?id=${encodeURIComponent(post.id)}`;
@@ -198,7 +218,6 @@ function renderPosts(items) {
     a.appendChild(h3);
     card.appendChild(a);
 
-   
     let mediaUrl = "";
     if (Array.isArray(post.media) && post.media.length) {
       mediaUrl = toUrl(post.media[0]);
@@ -210,12 +229,13 @@ function renderPosts(items) {
       const img = document.createElement("img");
       img.src = mediaUrl;
       img.alt = "";
-      img.style = "max-width:100%;border-radius:12px;margin:6px 0";
+      img.className = "card-img-top rounded";
       card.appendChild(img);
     }
 
     if (post.body) {
       const body = document.createElement("p");
+      body.className = "card-text p-3 text-light";
       body.textContent = post.body;
       card.appendChild(body);
     }

@@ -1,56 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Sphere</title>
-  <link rel="stylesheet" href="./assets/css/styles.css"/>
-</head>
-<body>
-  <div class="container">
-    <h1>Sphere</h1>
-    <p>Redirecting…</p>
-    <p class="badge">If nothing happens, <a class="button" href="./pages/login.html">go to Login</a>.</p>
-  </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sphere</title>
+    <link rel="stylesheet" href="styles/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Sphere</h1>
+      <p>Redirecting…</p>
+      <p class="badge">
+        If nothing happens,
+        <a class="button" href="./pages/login.html">go to Login</a>.
+      </p>
+    </div>
 
-  <script>
-  (function () {
-    const FEED  = "./pages/feed.html";
-    const LOGIN = "./pages/login.html";
+    <script>
+      (function () {
+        const FEED = "./pages/feed.html";
+        const LOGIN = "./pages/login.html";
 
-    function b64urlDecode(str) {
-      try {
-        const pad = "===".slice((str.length + 3) % 4);
-        const base64 = str.replace(/-/g, "+").replace(/_/g, "/") + pad;
-        return atob(base64);
-      } catch { return ""; }
-    }
+        function b64urlDecode(str) {
+          try {
+            const pad = "===".slice((str.length + 3) % 4);
+            const base64 = str.replace(/-/g, "+").replace(/_/g, "/") + pad;
+            return atob(base64);
+          } catch {
+            return "";
+          }
+        }
 
-    function isTokenValid(token) {
-      if (!token) return false;
-      try {
-        const payload = JSON.parse(b64urlDecode(token.split(".")[1]) || "{}");
-        if (!payload.exp) return true;    
-        return Date.now() < payload.exp * 1000;
-      } catch { return false; }
-    }
+        function isTokenValid(token) {
+          if (!token) return false;
+          try {
+            const payload = JSON.parse(
+              b64urlDecode(token.split(".")[1]) || "{}"
+            );
+            if (!payload.exp) return true;
+            return Date.now() < payload.exp * 1000;
+          } catch {
+            return false;
+          }
+        }
 
-    const token  = localStorage.getItem("token");
-    const apiKey = localStorage.getItem("apiKey");
+        const token = localStorage.getItem("token");
+        const apiKey = localStorage.getItem("apiKey");
 
-    const authed = !!(token && apiKey && isTokenValid(token));
+        const authed = !!(token && apiKey && isTokenValid(token));
 
-    if (!authed) {
+        if (!authed) {
+          try {
+            localStorage.removeItem("token");
+            localStorage.removeItem("apiKey");
+          } catch {}
+        }
 
-      try { localStorage.removeItem("token"); localStorage.removeItem("apiKey"); } catch {}
-    }
+        location.replace(authed ? FEED : LOGIN);
+      })();
+    </script>
 
-    location.replace(authed ? FEED : LOGIN);
-  })();
-</script>
-
-
-  <noscript>
-  </noscript>
-</body>
+    <noscript> </noscript>
+  </body>
 </html>

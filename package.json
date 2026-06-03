@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "sass": "^1.93.3"
+  },
+  "name": "js2-ca",
+  "version": "1.0.0",
+  "description": "1. Open **GitHub Desktop**.\r 2. Click **File → Clone Repository…**.\r 3. Choose the **URL** tab and paste:",
+  "main": "index.js",
+  "scripts": {
+    "build": "sass styles/scss:styles/css --style=compressed",
+    "watch": "sass styles/scss:styles/css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amf1b1an/JS2-CA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amf1b1an/JS2-CA/issues"
+  },
+  "homepage": "https://github.com/Amf1b1an/JS2-CA#readme"
+}
