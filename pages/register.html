@@ -1,49 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sphere - registration</title>
+    <title>Sphere - Registration</title>
     <link rel="stylesheet" href="../styles/css/styles.css" />
   </head>
-  <body>
+  <body class="bg-primary">
     <div class="container">
-      <h1>Title Placeholder</h1>
-      <div class="card">
-        <h2>Register</h2>
-        <form id="registerForm" class="form">
-          <div class="form-row">
-            <label>Name (letters, numbers, underscore)</label>
+      <h1 class="py-2.5 pt-5 text-light">Sphere</h1>
+      <div class="container bg-secondary rounded p-4 border border-light">
+        <h2 class="text-light">Register</h2>
+        <form id="registerForm" class="custom-form">
+          <div class="mb-3">
+            <label for="name" class="form-label text-info"
+              >Name (letters, numbers, underscore):</label
+            >
             <input
-              class="input"
+              class="form-control bg-primary text-light"
               type="text"
+              id="name"
               name="name"
               required
               pattern="^[A-Za-z0-9_]+$"
+              placeholder="YourName"
             />
           </div>
-          <div class="form-row">
-            <label>Email (stud.noroff.no / noroff.no)</label>
-            <input class="input" type="email" name="email" required />
-          </div>
-          <div class="form-row">
-            <label>Password (min 8 chars)</label>
+
+          <div class="mb-3">
+            <label for="email" class="form-label text-info"
+              >Email (stud.noroff.no / noroff.no):</label
+            >
             <input
-              class="input"
+              class="form-control bg-primary text-light"
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="user@stud.noroff.no"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label text-info"
+              >Password (min 8 chars):</label
+            >
+            <input
+              class="form-control bg-primary text-light"
               type="password"
+              id="password"
               name="password"
               required
               minlength="8"
+              placeholder="password"
             />
           </div>
-          <div class="form-row">
-            <label>Avatar URL (optional)</label>
-            <input class="input" type="url" name="avatar" />
+
+          <div class="mb-3">
+            <label for="avatar" class="form-label text-info"
+              >Avatar URL (optional):</label
+            >
+            <input
+              class="form-control bg-primary text-light"
+              type="url"
+              id="avatar"
+              name="avatar"
+              placeholder="https://example.com/avatar.jpg"
+            />
           </div>
-          <div class="row">
-            <button class="button primary" type="submit">Register</button>
-            <a class="button" href="./login.html">Back to Login</a>
-          </div>
+
+          <button class="btn btn-primary bg-success" type="submit">
+            Register
+          </button>
+          <a class="btn btn-primary bg-info" href="./login.html">Login</a>
+
           <p id="registerError" class="badge hidden"></p>
         </form>
       </div>
